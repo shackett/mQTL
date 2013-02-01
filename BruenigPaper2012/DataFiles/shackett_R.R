@@ -2,6 +2,7 @@ setwd("~/Desktop/mQTL/BruenigPaper2012/DataFiles")
 
 library(stringr)
 library(qtl)
+library(ggplot2)
 
 colinfo <- scan("segAbund.txt", what = "character", nlines = 1)
 seginfo <- data.frame(date = sapply(colinfo, function(entry){unlist(strsplit(entry, "-"))[1]}), seg = sapply(colinfo, function(entry){str_extract(str_extract(entry, '-[a-z0-9]{2,10}-'), '[a-z0-9]{2,10}')}), stringsAsFactors = FALSE)
@@ -86,42 +87,27 @@ for(met in 1:length(herit)){
   
   }
 
+met_herit <- data.frame(compound = rownames(normMat), heritability = herit, nassoc = 0, heritExplained = NA, frac_missingVals = missingValFrac, stringsAsFactors = FALSE)
 
 
-  
-#this is equivalent to what was done above, but is more confusingly coded
-envSSmat <- matrix(NA, ncol = length(sampleToSeg[1,]), nrow = length(normMat[,1]))
-#if there is no estimate of the unconfounded SS for a segregant (i.e. no biological replicates exist), remove that fraction of the SS from the rowSS
-unnestedSS <- rep(0, times = length(rowSS))
 
-for(seg in 1:length(unique(seginfo$seg))){
-	
-	subData <- normMat[,c(1:length(normMat[1,]))[sampleToSeg[,seg] == 1]]
-	can_calc_Venv <- rowSums(!is.na(subData)) >= 2
-	if(sum(!can_calc_Venv) != 0){
-		envSSmat[!can_calc_Venv,seg] <- NA
-		if(sum(rowSums(!is.na(subData)) == 1) >= 2){
-			unnestedSS[rowSums(!is.na(subData)) == 1] <- unnestedSS[rowSums(!is.na(subData)) == 1] + (rowSums(subData[rowSums(!is.na(subData)) == 1,], na.rm = TRUE) - rowMean[rowSums(!is.na(subData)) == 1])^2
-			}
-		if(sum(rowSums(!is.na(subData)) == 1) == 1){
-			unnestedSS[rowSums(!is.na(subData)) == 1] <- unnestedSS[rowSums(!is.na(subData)) == 1] + (subData[rowSums(!is.na(subData)) == 1,][!is.na(subData[rowSums(!is.na(subData)) == 1,])] - rowMean[rowSums(!is.na(subData)) == 1])^2
-			}	
-		}
-	
-	envSSmat[can_calc_Venv,seg] <- apply((subData[can_calc_Venv,] - apply(subData[can_calc_Venv,], 1, mean, na.rm = TRUE) %*% matrix(1, ncol = length(subData[1,])))^2 * t(matrix(1, nrow = length(subData[1,]), ncol = 1) %*% apply(!is.na(subData[can_calc_Venv,]), 1, sum)/(apply(!is.na(subData[can_calc_Venv,]), 1, sum) - 1)), 1, sum)
-		
-	}
-	
-#met_herit <- data.frame(compound = rownames(normMat), heritability = ((rowSS - unnestedSS) - rowSums(envSSmat, 1, na.rm = TRUE))/(rowSS - unnestedSS), nassoc = 0, frac_missingVals = missingValFrac, stringsAsFactors = FALSE)
-met_herit <- data.frame(compound = rownames(normMat), heritability = herit, nassoc = 0, frac_missingVals = missingValFrac, stringsAsFactors = FALSE)
-
+#overwrite incorrect annotations
+GWAShits$name[GWAShits$name == "Unk_131@10-+149-0"] <- "Unk_131@10--149-0"
+GWAShits$name[GWAShits$name == "Unk_135@10-+225.001-0"] <- "Unk_135@10--225.001-0"
+GWAShits$name[GWAShits$name == "Unk_239@10-+337-0"] <- "Unk_239@10--337-0"
+GWAShits$name[GWAShits$name == "Unk_267@20-+387-0"] <- "Unk_267@20--387-0"
+GWAShits$name[GWAShits$name == "thiamine-1"] <- "thiamine-0"
+GWAShits$name[GWAShits$name == "lysine-G"] <- "lysine-0"
+GWAShits$name[GWAShits$name == "hexose-phosphate-2"] <- "hexose-phosphate-2-0"
+GWAShits$name[GWAShits$name == "ADP-nega-0"] <- "ADP-posi-0"
 
 GWAShitnum <- table(GWAShits$name)
-#sapply(met_herit$compound, function(cmpd){unlist(strsplit(cmpd, '-[0-9]'))[1]})
 
-for(assoc in names(GWAShitnum)){
-	met_herit$nassoc[met_herit$compound == assoc] <- GWAShitnum[names(GWAShitnum) == assoc]
-	}
+#table of QTLs
+
+table(table(GWAShits$name[-(grep('Unk', GWAShits$name))]))
+#glut are combined so -2 ones and +1 2
+table(table(GWAShits$name[(grep('Unk', GWAShits$name))]))
 
 colinfo <- scan("josh_formatted_genotypes.txt", what = "character", nlines = 1)
 segGeno <- read.delim("josh_formatted_genotypes.txt", header = TRUE, sep = "\t", stringsAsFactors = F)
@@ -139,7 +125,7 @@ collapsedSegName <- sapply(segName, function(segname){
   })
 
 #missing genotypes for 2 segregants
-table(colnames(sampleToSeg) %in% collapsedSegName)
+#table(colnames(sampleToSeg) %in% collapsedSegName)
 
 segGenoQTL <- matrix(NA, ncol = sum(colnames(sampleToSeg) %in% collapsedSegName), nrow = length(GWAShits[,1]))
 rownames(segGenoQTL) <- GWAShits$X; colnames(segGenoQTL) <- colnames(sampleToSeg)[colnames(sampleToSeg) %in% collapsedSegName]
@@ -160,6 +146,99 @@ for(a_row in 1:length(segGenoQTL[,1])){
 
 
 
+GWAShits$effectSize <- NA
+GWAShits$varExplained <- NA
+
+#reduce sampleSeg to align it to genotyped segregants
+
+sampleToSegGen <- sampleToSeg[,sapply(colnames(segGenoQTL), function(a_seg){
+  c(1:length(sampleToSeg[1,]))[colnames(sampleToSeg) == a_seg]
+  })]
+  
+
+#unique compounds 
+unqSigCmpds <- unique(GWAShits$name)[unique(GWAShits$name) %in% rownames(normMat)]
+warnbox_plotList <- list()
+
+for(cmpd in unqSigCmpds){
+  cmpdAbund <- normMat[rownames(normMat) == cmpd,]
+  if(cmpd %in% c("glutathione-0", "glutathione disulfide-posi-1")){
+    cmpd <- c("glutathione-0", "glutathione disulfide-posi-1")
+    }
+  
+  QTLgenotypes <- t(segGenoQTL[GWAShits$name %in% cmpd,] %*% t(sampleToSegGen))
+  #ls regression for effect size
+  GWAShits$effectSize[GWAShits$name %in% cmpd] <- summary(lm(cmpdAbund ~ QTLgenotypes))$coef[-1,1]
+  #anova to determine the fraction of variance explained by all QTLs
+  #GWAShits$varExplained[GWAShits$name %in% cmpd] <- anova(lm(cmpdAbund ~ QTLgenotypes))[1,2]/sum(anova(lm(cmpdAbund ~ QTLgenotypes))[,2])
+  genSS <- anova(lm(as.formula(paste("cmpdAbund", paste(paste("QTLgenotypes[,", c(1:length(QTLgenotypes[1,])), "]", sep = ""), collapse = " + "), sep = ' ~ '))))[,2]
+  GWAShits$varExplained[GWAShits$name %in% cmpd] <- genSS[-length(genSS)]/sum(genSS)
+  
+  
+  #generate a boxplot of
+  
+  boxplotGenoPrep <- QTLgenotypes[,order(GWAShits$varExplained[GWAShits$name %in% cmpd], decreasing = TRUE)]
+  boxplotGenoPrep[boxplotGenoPrep == 0] <- "BY"; boxplotGenoPrep[boxplotGenoPrep == 1] <- "RM"
+
+  boxplot_theme <- theme(text = element_text(size = 20, face = "bold"), title = element_text(size = 25, face = "bold"), panel.background =  element_blank(), legend.position = "none", 
+  panel.grid.minor =  element_blank(), panel.grid.major.y =  element_blank(), axis.text.y = element_text(size = 20, face = "bold"), axis.ticks.y = element_line(size = 1), axis.ticks.x = element_blank(), axis.line = element_blank()) 
+  
+  if(is.vector(boxplotGenoPrep)){
+      boxplotDF <- data.frame(abundance = cmpdAbund, genotype = boxplotGenoPrep)  
+  }else{
+      boxplotDF <- data.frame(abundance = cmpdAbund, genotype = apply(boxplotGenoPrep, 1, paste, collapse = "/"))
+    }
+  
+  #bootstrap to determine a 95% CI for each genotypes' median
+  B <- 10000
+  unq_geno <- unique(boxplotDF$genotype)
+  genoCI <- data.frame(genotype = unq_geno, ymin = NA, ymax = NA)
+  for(gen in unq_geno){
+    genAbunds <- boxplotDF$abundance[boxplotDF$genotype == gen][!is.na(boxplotDF$abundance[boxplotDF$genotype == gen])]
+    genMedians <- sapply(1:B, function(b){
+      median(sample(genAbunds, length(genAbunds), replace = T))
+      })
+    genoCI[genoCI$genotype == gen, c(2,3)] <- sort(genMedians)[c(B*0.025, B*0.975)]
+    }
+  
+  boxplotPlot <- ggplot(boxplotDF, aes(x = genotype)) + boxplot_theme
+  box_plotList[[cmpd[1]]] <- boxplotPlot + geom_violin(aes(y = abundance, fill = "RED")) + geom_vline(aes(xintercept = 0), size = 1) + scale_x_discrete(name = "Segregant Genotype", expand = c(0,0)) + scale_y_continuous(name = "Relative abundance (log2)") + geom_errorbar(data = genoCI, aes(x = genotype, ymin = ymin, ymax = ymax), size = 1)
+  
+} 
+
+plot(GWAShits$varExplained ~ GWAShits$effectSize)
+
+
+
+
+#bin ahead of time - determine how many compounds are in each bin and the max bin
+
+
+
+#bin heritability by 0.05 on [0,1] - i.e. 20 bins
+herit_frame <- data.frame(herit = c(0, 0, 0, 0.2, 0.2, 0.2, 0.2, 0.2), frac = c(0.2, 0.4, 0.4, 0.3, 0.1, 0.6, 0.5, 0.5), metStack = c(1,1,1,1,1,1,2,2), color = c("A", "B", "R", "A", "B", "R", "A", "R"))
+
+herit_plot <- ggplot(herit_frame, aes(x = factor(1), fill = color, y = frac))
+herit_plot + geom_bar(width = 1) + facet_grid(metStack ~ herit) + coord_polar(theta = "y")
+
+
+#"S-adenosyl-L-homoCysteine-posi-0" tossed because of too few segregants
+
+for(assoc in names(GWAShitnum)){
+  met_herit$nassoc[met_herit$compound == assoc] <- GWAShitnum[names(GWAShitnum) == assoc]
+  met_herit$heritExplained[met_herit$compound == assoc] <- paste(GWAShits$varExplained[GWAShits$name == assoc], collapse ='_')
+  if(sum(met_herit$compound == assoc) == 0){print(paste(assoc, "missing"))}
+}
+
+
+
+qplot(GWAShits$effectSize)
+qplot(met_herit$heritExplained/met_herit$heritability)
+qplot(GWAShits$varExplained)
+
+
+
+length(met_herit[grep('Unk', met_herit$compound),][,1])
 
 
 
@@ -188,64 +267,78 @@ met_herit$heritability[met_herit$compound == "glutathione-0"] <- mean(met_herit$
 met_herit$frac_missingVals[met_herit$compound == "glutathione-0"] <- min(met_herit$frac_missingVals[met_herit$compound %in% c("glutathione-0", "glutathione disulfide-posi-1")])
 met_herit <- met_herit[!met_herit$compound == "glutathione disulfide-posi-1",]
 
-#met_herit$nassoc[met_herit$compound == "S-adenosyl-L-homoCysteine-posi-0"] <- met_herit$nassoc[met_herit$compound == "S-adenosyl-L-homoCysteine-posi-0"] + met_herit$nassoc[met_herit$compound == "S-adenosyl-L-homocysteine-nega-1"]
-#met_herit$heritability[met_herit$compound == "S-adenosyl-L-homoCysteine-posi-0"] <- mean(met_herit$heritability[met_herit$compound %in% c("S-adenosyl-L-homoCysteine-posi-0", "S-adenosyl-L-homocysteine-nega-1")])
-#met_herit$frac_missingVals[met_herit$compound == "S-adenosyl-L-homoCysteine-posi-0"] <- min(met_herit$frac_missingVals[met_herit$compound %in% c("S-adenosyl-L-homoCysteine-posi-0", "S-adenosyl-L-homocysteine-nega-1")])
-#met_herit <- met_herit[!met_herit$compound == "S-adenosyl-L-homocysteine-nega-1",]
-
 met_herit$fraction_missing_lines <- as.factor(sapply(floor(met_herit$frac_missingVals * 10)*10, function(val){
 	paste(val, "-", val+10, " %", sep = "")
 	}))
 
 met_herit$nassoc <- as.factor(met_herit$nassoc)
 
-library(ggplot2)
 
 pdf("QTLnum.pdf")
 herit_plot <- ggplot(met_herit, aes(x = heritability, y = fill = fraction_missing_lines)) + facet_grid(nassoc ~ .)
 herit_plot + geom_histogram()
-
-herit_plot <- ggplot(met_herit, aes(x = heritability, fill = "RED")) 
-herit_plot + scale_x_continuous(name = "Heritability", limits = c(0,1), expand = c(0,0)) + scale_y_discrete(name = "Number of Metabolites", expand = c(0,0)) +
-  theme(axis.text.x = element_text(size = 20, face = "bold"), axis.text.y = element_text(size = 0, face = "bold"), strip.text.x = element_text(size = 16, colour = "RED", face = "bold")) +
-  theme(axis.title.x = element_text(size = 25, face = "bold"), axis.title.y = element_text(size = 25, face = "bold")) + scale_fill_discrete(legend = FALSE) +
-  theme(axis.ticks.y = element_line(size = 0), panel.grid.minor = element_line(size = 0), panel.grid.major.y = element_line(size = 0), panel.grid.minor.y = element_line(size = 0)) + geom_dotplot(binwidth = 0.05, method = "histodot", binpositions = "all")
-
-hotCols <- colorRampPalette(c("lightgoldenrodyellow", "firebrick1"))
-assocCols <- hotCols(max(as.numeric(met_herit$nassoc)-1)+1)
-show_col(hotCols(10))
-
-herit_plot <- ggplot(met_herit, aes(x = heritability, fill = nassoc)) 
-herit_plot + scale_x_continuous(name = "Heritability", limits = c(0,1), expand = c(0,0)) + scale_y_discrete(name = "Number of Metabolites", expand = c(0,0)) +
-  theme(axis.text.x = element_text(size = 20, face = "bold"), axis.text.y = element_text(size = 0, face = "bold"), strip.text.x = element_text(size = 16, colour = "RED", face = "bold")) +
-  theme(axis.title.x = element_text(size = 25, face = "bold"), axis.title.y = element_text(size = 25, face = "bold")) + 
-  theme(axis.ticks.y = element_line(size = 0), panel.grid.minor = element_line(size = 0), panel.grid.major.y = element_line(size = 0), panel.grid.minor.y = element_line(size = 0)) + geom_dotplot(binwidth = 0.05, method = "histodot", binpositions = "all") +
-  theme(legend.position = "top", legend.title = element_text(size = 20, face = "bold"), legend.text = element_text(size = 20, face = "bold"))+
-  scale_fill_manual(name = 'Number of QTLs', values = c("0" = assocCols[1], "1" = assocCols[2], "2" = assocCols[3], "3" = assocCols[4], "4" = assocCols[5])) + 
-  theme(panel.background = element_rect(fill =  "transparent", colour = 'black', size = 2), panel.grid.minor = theme_blank(), panel.grid.major = theme_blank())
 
 #reduced code
 hotCols <- colorRampPalette(c("lightgoldenrodyellow", "firebrick1"))
 assocCols <- hotCols(max(as.numeric(met_herit$nassoc)-1)+1)
 
 
-histodot_theme <- theme(text = element_text(size = 20, face = "bold"), title = element_text(size = 25, face = "bold"), panel.background = element_rect(fill =  "transparent", colour = 'black', size = 0), legend.position = "top", 
-                        panel.grid.minor = element_line(size = 0), panel.grid.major.y = element_line(size = 0), axis.ticks.y = element_line(size = 0), axis.text.y = element_text(size = 0)) 
+histodot_theme <- theme(text = element_text(size = 20, face = "bold"), title = element_text(size = 25, face = "bold"), panel.background = element_blank(), legend.position = "top", 
+                        panel.grid.minor = element_blank(), panel.grid.major.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank(), axis.line = element_blank()) 
+
+herit_plot <- ggplot(met_herit, aes(x = heritability, fill = nassoc)) 
+herit_plot <- herit_plot + geom_dotplot(binwidth = 0.05, method = "histodot", binpositions = "all") + histodot_theme + geom_hline(aes(yintercept = 0), size = 0.5) + geom_vline(aes(xintercept = 0), size = 0.5) +
+  scale_x_continuous(name = "Heritability", expand = c(0,0)) + scale_y_discrete(name = "Number of Metabolites", expand = c(0,0)) +
+  scale_fill_manual(name = 'Number of QTLs', values = c("0" = assocCols[1], "1" = assocCols[2], "2" = assocCols[3], "3" = assocCols[4], "4" = assocCols[5]))
+
+
+ggsave(plot = herit_plot, file = "heritPlot.pdf", width = 10, height = 8, dpi = 500)  
+
+#### comapre explained heritability to total broad for metabolites with QTLs
+herit_explained_df <- met_herit[!is.na(met_herit$heritExplained),]
+herit_explained_df <- herit_explained_df[order(herit_explained_df$heritability),]
+herit_explained_df_unpacked <- NULL
+for(metN in 1:length(herit_explained_df[,1])){
+  herit_row <- herit_explained_df[metN,]
+  QTLvar <- sort(as.numeric(strsplit(herit_row$heritExplained, split = "_")[[1]]), decreasing = T)  
+  
+  herit_explained_df_unpacked <- rbind(herit_explained_df_unpacked, data.frame(x = metN, compound = herit_row$compound, QTLnumber = c(c(1:length(QTLvar)), "Residual Heritability"),  varExplained = c(QTLvar, herit_row$heritability - sum(QTLvar))))
+  }
+
+herit_explained_df_unpacked$QTLnumber <- factor(herit_explained_df_unpacked$QTLnumber, levels = sort(levels(herit_explained_df_unpacked$QTLnumber)))
+
+
+barCols <- colorRampPalette(c("darkslategray", "gold"))
+assocCols <- barCols(max(as.numeric(met_herit$nassoc)-1))
+                                        
+barplot_theme <- theme(text = element_text(size = 20, face = "bold"), title = element_text(size = 25, face = "bold"), panel.background = element_blank(), legend.position = "none", 
+  panel.grid.minor = element_blank(), panel.grid.major.y = element_blank(), axis.ticks.x = element_blank(), axis.text.x = element_blank(), axis.line = element_blank()) 
+                                      
+herit_explained_plot <- ggplot(herit_explained_df_unpacked, aes(x = factor(x), y = varExplained, fill = as.factor(QTLnumber)))
+herit_explained_plot <- herit_explained_plot + geom_bar(binwidth = 1) + barplot_theme + geom_vline(aes(xintercept = 0), size = 0.5) + geom_hline(aes(yintercept = 0), size = 0.5) + 
+  scale_x_discrete(name = "Associated Metabolites", expand = c(0,0)) + scale_y_continuous(name = "Heritability", expand = c(0,0), limits = c(0,1)) +
+  scale_fill_manual(values = c("Residual Heritability" = "gray80", "1" = assocCols[1], "2" = assocCols[2], "3" = assocCols[3], "4" = assocCols[4]))
+ggsave(plot = herit_explained_plot, file = "heritExplained.pdf", width = 14, height = 7) 
+
+
+#pick out interesting examples and save boxplots
+ggsave(plot = box_plotList[["Unk_111@20--287.003-0"]], file = "Unknown.pdf", width = 10, height = 8) 
+ggsave(plot = box_plotList[["valine-0"]], file = "Valine.pdf", width = 15, height = 8) 
+ggsave(plot = box_plotList[["aspartate-0"]], file = "Aspartate.pdf", width = 10, height = 8) 
+
+
+
+
 
 herit_plot <- ggplot(met_herit, aes(x = heritability, fill = nassoc)) 
 herit_plot + geom_dotplot(binwidth = 0.05, method = "histodot", binpositions = "all") + histodot_theme + geom_hline(aes(yintercept = 0), size = 0.5) + geom_vline(aes(xintercept = 0), size = 0.5) +
   scale_x_continuous(name = "Heritability", expand = c(0,0)) + scale_y_discrete(name = "Number of Metabolites", expand = c(0,0)) +
   scale_fill_manual(name = 'Number of QTLs', values = c("0" = assocCols[1], "1" = assocCols[2], "2" = assocCols[3], "3" = assocCols[4], "4" = assocCols[5]))
-  
-
-
-
-
 
 #library(colorRamps)
 #hotCols <- colorRampPalette(c("black", "firebrick1"))
 
-
+>
 herit_plot <- ggplot(met_herit, aes(x = heritability, fill = fraction_missing_lines)) + facet_grid(. ~ nassoc)
 herit_plot + geom_histogram(binwidth = 0.05) + coord_flip() + scale_fill_discrete(name = 'Fraction of \nMissing Lines', h = c(200, 360)) + scale_x_continuous(name = "Heritability", limits = c(0,1), expand = c(0,0)) + scale_y_continuous(name = "Number of Metabolites") + 
   theme(axis.text.x = element_text(size = 12, face = "bold"), axis.text.y = element_text(size = 12, face = "bold"), strip.text.x = element_text(size = 16, colour = "RED", face = "bold")) +
@@ -261,7 +354,6 @@ herit_plot + geom_histogram(binwidth = 0.05) + coord_flip() + scale_x_continuous
 
 
 
-dev.off()
 
 prob_matchMat <- met_herit[met_herit$Zhu != "Not-Measured",]
 prob_matchMat$Zhu <- ifelse(prob_matchMat$Zhu == "mQTL Found", 1, 0)
