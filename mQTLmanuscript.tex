@@ -37,7 +37,6 @@
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{xfrac}
 
-
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \begin{document}
@@ -49,7 +48,6 @@
 {\Large
 \textbf{Genetic Basis of Metabolome Variation in Yeast}
 }
-
 
 Jeffrey S. Breunig, Lewis-Sigler Institute for Integrative Genomics \& Department of Molecular Biology, Princeton University, Princeton, NJ, USA
 
@@ -65,7 +63,7 @@ $\ast$ E-mail: lkruglyak@mednet.ucla.edu
 
 \vspace{10mm}
 \begin{center}
-\textbf{ABSTRACT}
+\textbf{Abstract}
 \end{center}
 \vspace{10mm}
 
@@ -74,7 +72,7 @@ $\ast$ E-mail: lkruglyak@mednet.ucla.edu
 
 \vspace{10mm}
 \begin{center}
-\textbf{AUTHOR SUMMARY}
+\textbf{Author Summary}
 \end{center}
 \vspace{10mm}
 
@@ -83,7 +81,7 @@ Many traits, from human height to \textit{E. coli} growth rate, quantitatively v
 
 \vspace{10mm}
 \begin{center}
-\textbf{INTRODUCTION}
+\textbf{Introduction}
 \end{center}
 \vspace{10mm}
 
@@ -97,7 +95,7 @@ With the goal of discovering potential novel regulators of primary metabolism, w
 
 \vspace{10mm}
 \begin{center}
-\textbf{RESULTS}
+\textbf{Results/Discussion}
 \end{center}
 \vspace{10mm}
 
@@ -111,24 +109,11 @@ Many of these compound's levels show patterns of inheritance consistent with a c
 
 We tested for linkage with R/qtl \cite{Broman:2003wq} and used permutations to establish that a LOD score of 3.4 corresponded to an empirical FDR of 10\%. Of the 74 compounds tested, 34 showed at least one significant linkage (metabolite quantitative trait locus or mQTL; Table S1). The majority of these compounds (21 of 34) had one mQTL, 9 had two mQTLs, three had three mQTLs and one had four mQTLs, for a total of 52 detected mQTLs. Almost all the compounds for which mQTLs were detected differed significantly between the parental strains at an FDR of 5\% (29 of 34).  For 24 compounds that differed significantly between the parental strains, we did not detect mQTLs, most likely due to complex underlying genetics, with multiple loci of small effect.  All compounds found to have significant mQTLs were primarily intracellular (as levels in biological samples were much greater than in media).
 
-The mQTLs were not uniformly distributed along the genome; rather, most fell within 8 ``hot spots'' with 3 or more compounds linking to each (Figures \ref{F1} and \ref{F2}, Materials and Methods). To improve the power and thoroughness of this analysis (as well as a subsequent analysis of heritability and mQTL effect size), 42 ion peaks (20 mQTLs) with a defined $\sfrac{m}{z}$ but unknown structural identity, were included. The observation of such hot spots, previously seen for other classes of traits, implies the presence of underlying polymorphisms with broad effects on the metabolome.
-
-\begin{figure}[p]
-\includegraphics[width = 9in, angle = 90]{Figures/Figure1-MetaboliteLinkages.pdf}
-\caption{Distribution of significant linkages across the genome: metabolite linkages that exceeded the 0.1 FDR significance threshold are plotted based on their most significant marker's genome location (indicated with a dot) with a 95\% confidence interval. Continuous vertical lines represent chromosome ends. Numerals are placed at chromosomes' center. Genes investigated in this study are shown at top.  mQTLs for ions of unknown identity were combined into a single class.}
-\label{F1}
-\end{figure}
-
-\begin{figure}[p]
-\includegraphics[width = 6in]{Figures/Figure2-MetabolitesVsTranscriptsCol.pdf}
-\caption{Similarities between metabolite and transcript linkage distributions: significant linkages are binned in 10 kb increments and the count for these bins are plotted. Linkage distributions for transcripts are shown at top, metabolites at bottom. Shared mQTL-eQTL hotspots are colored green.  Dotted blue lines show chromosome ends. Red lines show the hotspot cutoff (see Methods for calculation).}
-\label{F2}
-\end{figure}
-
+The mQTLs were not uniformly distributed along the genome; rather, most fell within 8 ``hot spots'' with 3 or more compounds linking to each (Figures 1 and 2, Materials and Methods). To improve the power and thoroughness of this analysis (as well as a subsequent analysis of heritability and mQTL effect size), 42 ion peaks (20 mQTLs) with a defined $\sfrac{m}{z}$ but unknown structural identity, were included. The observation of such hot spots, previously seen for other classes of traits, implies the presence of underlying polymorphisms with broad effects on the metabolome.
 
 \textbf{Transcriptome and metabolome variation}
 
-We compared the metabolite linkage results with those for transcript abundance in the same cross \cite{Smith:2008vy}. Transcript linkages also cluster in hot spots, and the hot spots for metabolites and transcripts show a significant overlap in location, with six of eight metabolite hot spots also corresponding with transcript hot spots (p $<$ 0.0001, based on permutation test) (Figure \ref{F2}). The hot spots unique to metabolism included hot spot m8 on chromosome XVI (linked to levels of ribose-phosphate, aspartate and glutamate) and hot spot m5 on chromosome VIII (linked to levels of S-adenosyl-homocysteine, S-adenosyl-methionine, and thiamine). The latter hot spot is especially interesting since regulation of the methionine cycle is poorly understood in eukaryotes despite being implicated in cardiovascular disease \cite{Kampfer:2010bl, Fetrow:2001ty}. It will be discussed in greater depth below.
+We compared the metabolite linkage results with those for transcript abundance in the same cross \cite{Smith:2008vy}. Transcript linkages also cluster in hot spots, and the hot spots for metabolites and transcripts show a significant overlap in location, with six of eight metabolite hot spots also corresponding with transcript hot spots (p $<$ 0.0001, based on permutation test) (Figure 2). The hot spots unique to metabolism included hot spot m8 on chromosome XVI (linked to levels of ribose-phosphate, aspartate and glutamate) and hot spot m5 on chromosome VIII (linked to levels of S-adenosyl-homocysteine, S-adenosyl-methionine, and thiamine). The latter hot spot is especially interesting since regulation of the methionine cycle is poorly understood in eukaryotes despite being implicated in cardiovascular disease \cite{Kampfer:2010bl, Fetrow:2001ty}. It will be discussed in greater depth below.
 
 \textbf{Metabolic genes in confidence intervals}
 
@@ -136,84 +121,37 @@ To determine whether changes in metabolites tend to be linked to genes with know
 
 \textbf{The \textit{ura3} hot spot}
 
-Levels of five metabolites linked to a hot spot on chromosome V: orotate, orotidine, orotidine-5'-phosphate, UDP-D-glucose, and UDP-N-acetyl-glucosamine. All five are intermediates or products of pyrimidine biosynthesis (Figure \ref{F3}). \textit{Ura3}, a pyrimidine biosynthesis gene which carries an engineered deletion in the RM strain, is contained within the hot spot and lies within the 95\% mQTL confidence intervals for all five compounds (Figure S2). Compounds upstream of \textit{ura3} in the pathway show the greatest differences in abundance (as much as 128-fold), and particularly strong linkages (Figure \ref{F3}). To confirm that this mQTL hotspot was governed by segregation of the engineered \textit{ura3} deletion, \textit{ura3}$\bigtriangleup$, this RM allele was inserted into a BY background and metabolomic differences between BY and BY\textit{ura3}$\bigtriangleup$ were assessed.  Using a two-tailed t-test, two compounds were found to differ between these two conditions at a 0.05 FDR.  These two compounds, orotate and orotidine-5'phosphate, are both associated with this mQTL hotspot; the deletion resulted in a 16 and 43-fold increase in their accumulation respectively.  These results demonstrate that our approach can link changes in metabolite levels to a polymorphism (in this case, an engineered one) in a gene known to participate in the biosynthesis of the relevant metabolites.
-
-\begin{figure}[p]
-\includegraphics[width = 6in]{Figures/Figure3-URA3Pathway.pdf}
-\caption{Levels of pyrimidine intermediates and products differ based on the \textit{ura3} allele inherited. The relevant portions of the pathway are shown, with measured metabolites in red. The location of \textit{ura3} in the pathway is shown in green. The accompanying plots show phenotype distribution of the segregants based only on the allele of \textit{ura3} inherited: RM in purple, BY in orange. The \textit{ura3} gene is defective in RM. All metabolite levels are log2(Segregant / RM). Compounds that were significantly linked to \textit{ura3} locus (via LOD scores) are shown in bold.}
-\label{F3}
-\end{figure}
+Levels of five metabolites linked to a hot spot on chromosome V: orotate, orotidine, orotidine-5'-phosphate, UDP-D-glucose, and UDP-N-acetyl-glucosamine. All five are intermediates or products of pyrimidine biosynthesis (Figure 3). \textit{Ura3}, a pyrimidine biosynthesis gene which carries an engineered deletion in the RM strain, is contained within the hot spot and lies within the 95\% mQTL confidence intervals for all five compounds (Figure S2). Compounds upstream of \textit{ura3} in the pathway show the greatest differences in abundance (as much as 128-fold), and particularly strong linkages (Figure 3). To confirm that this mQTL hotspot was governed by segregation of the engineered \textit{ura3} deletion, \textit{ura3}$\bigtriangleup$, this RM allele was inserted into a BY background and metabolomic differences between BY and BY\textit{ura3}$\bigtriangleup$ were assessed.  Using a two-tailed t-test, two compounds were found to differ between these two conditions at a 0.05 FDR.  These two compounds, orotate and orotidine-5'phosphate, are both associated with this mQTL hotspot; the deletion resulted in a 16 and 43-fold increase in their accumulation respectively.  These results demonstrate that our approach can link changes in metabolite levels to a polymorphism (in this case, an engineered one) in a gene known to participate in the biosynthesis of the relevant metabolites.
 
 
 \textbf{\textit{Slt2} and \textit{erc1} polymorphisms impact S-adenosyl-methionine levels}
 
 The mQTL hot spot on chromosome VIII (m5) is linked to levels of three metabolites: thiamine, S-adenosyl-methionine (SAM), and S-adenosyl-homocysteine (SAH) (Table S1). The overlap among 95\% confidence intervals of the mQTLs for these compounds covers a region containing all or part of 14 genes (Figure S3). None of the genes in this region have a known connection with the sulfur-assimilation pathway. We identified \textit{slt2} as a candidate for further evaluation due to the presence of a two amino acid indel polymorphism between BY and RM in a polyglutamine track; variation in the number of glutamines in this track has previously been implicated in stress response \cite{deLlanos:2010jt}.
 
-Segregants inheriting the RM allele of \textit{slt2} had significantly higher levels of SAM and SAH (Figure \ref{F4}). To test the allelic effect of \textit{slt2}, we created allele-replacement strains in both parental backgrounds and compared metabolite levels to those in the parent strains (Figure \ref{F5}). In the BY background, the RM allele of \textit{slt2} did not raise SAH levels above the limit of detection, nor did it result in a significant change for SAM (p = 0.1598). However, in the RM background, the BY allele of \textit{slt2} resulted in a three-fold decrease for both SAM and SAH (Figure \ref{F5}; p $<$ 0.001). The difference in the effects of the allele swaps in the two backgrounds implies an interaction between the allelic status of \textit{slt2} and other loci.
+Segregants inheriting the RM allele of \textit{slt2} had significantly higher levels of SAM and SAH (Figure 4). To test the allelic effect of \textit{slt2}, we created allele-replacement strains in both parental backgrounds and compared metabolite levels to those in the parent strains (Figure 5). In the BY background, the RM allele of \textit{slt2} did not raise SAH levels above the limit of detection, nor did it result in a significant change for SAM (p = 0.1598). However, in the RM background, the BY allele of \textit{slt2} resulted in a three-fold decrease for both SAM and SAH (Figure 5; p $<$ 0.001). The difference in the effects of the allele swaps in the two backgrounds implies an interaction between the allelic status of \textit{slt2} and other loci.
 
-We considered the possibility that the effect of this locus is due to polymorphisms in multiple linked genes. We investigated a nearby gene, \textit{erc1}, due to the presence of an indel polymorphism that causes a frameshift which alters 37 residues and extends the peptide by 43 amino acids in the RM background. \textit{Erc1} has also been shown to have an effect on SAM levels when overexpressed in sak\'{e} strains of S. cerevisiae \cite{Choi:2009vg, Lee:2010ta, Shiomi:1991vo}. \textit{Erc1} is located 3kb (approximately 1 cM) from \textit{slt2}, and thus the alleles of the two genes segregate together as a haplotype. We used the \textit{slt2} allele replacement strains to create strains in which both genes were replaced with the alternative alleles. In the BY background, replacing both \textit{slt2} and \textit{erc1} with the RM alleles led to a significant increase in SAM (p = 0.019) compared to the original BY strain, but the level of SAM was still much lower than in RM (Figure \ref{F5}). In the RM background, replacing both genes with the BY alleles led to significantly lower levels of both metabolites compared to either the original RM strain or to the \textit{slt2} replacement alone (p $<$ 0.001 for all comparisons). These results suggest that polymorphisms in both \textit{slt2} and \textit{erc1} alter the levels of SAM-cycle compounds in these strains, with other undetected loci also playing a role in the observed variation.
+We considered the possibility that the effect of this locus is due to polymorphisms in multiple linked genes. We investigated a nearby gene, \textit{erc1}, due to the presence of an indel polymorphism that causes a frameshift which alters 37 residues and extends the peptide by 43 amino acids in the RM background. \textit{Erc1} has also been shown to have an effect on SAM levels when overexpressed in sak\'{e} strains of S. cerevisiae \cite{Choi:2009vg, Lee:2010ta, Shiomi:1991vo}. \textit{Erc1} is located 3kb (approximately 1 cM) from \textit{slt2}, and thus the alleles of the two genes segregate together as a haplotype. We used the \textit{slt2} allele replacement strains to create strains in which both genes were replaced with the alternative alleles. In the BY background, replacing both \textit{slt2} and \textit{erc1} with the RM alleles led to a significant increase in SAM (p = 0.019) compared to the original BY strain, but the level of SAM was still much lower than in RM (Figure 5). In the RM background, replacing both genes with the BY alleles led to significantly lower levels of both metabolites compared to either the original RM strain or to the \textit{slt2} replacement alone (p $<$ 0.001 for all comparisons). These results suggest that polymorphisms in both \textit{slt2} and \textit{erc1} alter the levels of SAM-cycle compounds in these strains, with other undetected loci also playing a role in the observed variation.
 
-\begin{figure}[p]
-\includegraphics[width = 6in]{Figures/Figure4-SLT2Impact.pdf}
-\caption{Levels of sulfur-assimilation intermediates differ based on the \textit{slt2} allele inherited. The relevant portions of the pathway are shown, with measured metabolites in red. The accompanying plots display the phenotypic distribution of the segregants based only on the allele of \textit{slt2} inherited: RM in purple, BY in orange. All metabolite levels are log2(Segregant / RM). Compounds that were significantly linked to \textit{slt2/Erc1} locus (via LOD scores) are shown in bold.}
-\label{F4}
-\end{figure}
 
-\begin{figure}[p]
-\includegraphics[width = 6in]{Figures/Figure5-slt2anderc1effects.pdf}
-\caption{RM-inheriting segregants for \textit{slt2} and \textit{erc1} show significantly higher levels for SAM.  Intensities (mean $\pm$ standard error) of SAM are plotted based upon the allele of \textit{slt2} (top) and \textit{slt2} and \textit{erc1} (bottom). Mass spectrometer ion counts for BY background (diamonds) and RM background (squares) are shown on the left axis while segregants' log2 relative abundances (triangles) are indicated on the right axis.}
-\label{F5}
-\end{figure}
-
-\textbf{IRA2 polymorphisms alter central metabolites}
+\textbf{\textit{Ira2} polymorphisms alter central metabolites}
 
 A mQTL hot spot on chromosome XV (m6) is linked to five central carbon metabolites: glucose-6-phosphate (G6P) and its isomers (which were not distinguished by the LC-MS method used here), fructose-1,6-bisphosphate (FBP), sedoheptulose 7-phosphate (S7P), dihydroxyacetone phosphate (DHAP), and (iso)citrate. The overlap among the 95\% confidence intervals of the mQTL for each compound covers a region containing all or part of 13 genes (Figure S4). We focused on \textit{ira2} as a candidate gene because it has a known function as a regulator of the Ras/PKA pathway \cite{Tanaka:1991ts}, a known effector of glycolytic flux \cite{Kim:2006ex}, and because we previously showed that polymorphisms in \textit{ira2} underlie a major eQTL hot spot (t16) at the same locus in this cross \cite{Smith:2008vy, Storey:2005hm}. \textit{Ira2} is a Ras-related GTPase \cite{Tanaka:1991ts, Parrini:1995tr, Broach:1991ur}, with \textit{ira2}-catalyzed GTP hydrolysis leading to inactivation of Ras. The eQTL expression patterns suggested that \textit{ira2} is hypoactive in the BY strain.
 
-Segregants that inherit the BY allele of \textit{ira2} showed higher levels of all five linked metabolites than those that inherit the RM allele (Figure \ref{F6}). To test the allelic effect of \textit{ira2}, we compared metabolite levels of \textit{ira2} allele-replacement strains in both backgrounds \cite{Smith:2008vy} to the original parent strains (for FBP, see Figure \ref{F7}; for other metabolites, see Figure S5). In the RM background, the BY allele of \textit{ira2} led to significantly higher levels of three compounds (p $<$ 0.01 for sedoheptulose-7-phosphate, FBP, DHAP). In the BY background, the RM allele of \textit{ira2} led to significantly lower levels of all five metabolites (p $<$ 0.05). These results demonstrate that polymorphisms in \textit{ira2} contribute to the observed variation in these five central metabolites.
+Segregants that inherit the BY allele of \textit{ira2} showed higher levels of all five linked metabolites than those that inherit the RM allele (Figure 6). To test the allelic effect of \textit{ira2}, we compared metabolite levels of \textit{ira2} allele-replacement strains in both backgrounds \cite{Smith:2008vy} to the original parent strains (for FBP, see Figure 7; for other metabolites, see Figure S5). In the RM background, the BY allele of \textit{ira2} led to significantly higher levels of three compounds (p $<$ 0.01 for sedoheptulose-7-phosphate, FBP, DHAP). In the BY background, the RM allele of \textit{ira2} led to significantly lower levels of all five metabolites (p $<$ 0.05). These results demonstrate that polymorphisms in \textit{ira2} contribute to the observed variation in these five central metabolites.
 
-Metabolites can accumulate due to either increased production or decreased consumption. To distinguish whether the BY allele of \textit{ira2} was enhancing central carbon metabolic flux versus inhibiting metabolite consumption, we analyzed glucose uptake in the BY and RM parent strains, as well as in \textit{ira2} allele-replacement strains in both backgrounds. Glucose uptake rate did not differ significantly between the two parental strains. In the two allele-replacement strains, however, glucose uptake diverged markedly. In the RM background, the BY allele of \textit{ira2} led to 45\% faster glucose uptake, whereas in the BY background, the RM allele led to a 20\% decrease (Figure \ref{F7}).  The main fermentative product of glucose is ethanol, so the rate of ethanol excretion in \textit{ira2} allele-swap strains was measured using 1H NMR.  In either background, the BY allele of \textit{ira2} led to a significant increases in ethanol excretion (p $<$ 0.05).  These results demonstrate that polymorphisms in \textit{ira2} control central carbon metabolic flux, with the BY allele inducing both higher metabolite levels and fluxes. In the parental strains, the metabolic flux impact of the \textit{ira2} polymorphism is presumably offset by differences at other loci.
+Metabolites can accumulate due to either increased production or decreased consumption. To distinguish whether the BY allele of \textit{ira2} was enhancing central carbon metabolic flux versus inhibiting metabolite consumption, we analyzed glucose uptake in the BY and RM parent strains, as well as in \textit{ira2} allele-replacement strains in both backgrounds. Glucose uptake rate did not differ significantly between the two parental strains. In the two allele-replacement strains, however, glucose uptake diverged markedly. In the RM background, the BY allele of \textit{ira2} led to 45\% faster glucose uptake, whereas in the BY background, the RM allele led to a 20\% decrease (Figure 7).  The main fermentative product of glucose is ethanol, so the rate of ethanol excretion in \textit{ira2} allele-swap strains was measured using 1H NMR.  In either background, the BY allele of \textit{ira2} led to a significant increases in ethanol excretion (p $<$ 0.05).  These results demonstrate that polymorphisms in \textit{ira2} control central carbon metabolic flux, with the BY allele inducing both higher metabolite levels and fluxes. In the parental strains, the metabolic flux impact of the \textit{ira2} polymorphism is presumably offset by differences at other loci.
 
 Because polymorphisms in \textit{ira2} result in differences in expression of $\sim$1300 genes \cite{Smith:2008vy}, we considered whether expression differences in central carbon metabolism genes might underlie the observed metabolic changes. Of 70 known central carbon metabolism genes (i.e., those with roles in glycolysis, pentose phosphate pathway, citric acid cycle, and oxidative phosphorylation from yeastgenome.org), 32 genes' expression linked to the \textit{ira2} locus in glucose media (Table S3).  This significantly exceeds the number of linkages expected for a random set of genes (p $<$ 0.01, Fischer's exact test). Remarkably, of the 32 linked genes, 28 are less highly expressed in the BY strain, which has higher levels of G6P, FBP, S7P, DHAP, and (iso)citrate. Thus, paradoxically, the BY allele of \textit{ira2} promotes higher central carbon metabolite levels while repressing central carbon metabolism gene expression.
 
 Insight into this paradox is provided by the nature of the regulated genes: 28 of the 32 central carbon metabolism genes that link to \textit{ira2} tend to be more highly expressed in ethanol than in glucose \cite{Smith:2008vy}; i.e., the primary transcriptional regulatory role of \textit{ira2} seems to be in enhancing expression of genes required for respiratory growth. In contrast, with the exception of (iso)citrate, the linked metabolites are indicative of active fermentation.  The accumulation of (iso)citrate in the BY strain is consistent with the lower expression of the primary isocitrate consuming enzyme (\textit{idh1}) from the BY allele of \textit{ira2}.  Taken together with the data showing that the BY allele of \textit{ira2} promotes glucose fermentation, one obtains a coherent view: \textit{ira2} activity is lower in the BY strain. This leads to decreased expression of genes required for respiration, more need for fermentative ATP production, and higher levels of the glycolytic intermediates G6P, FBP, and DHAP.
 
-\begin{figure}[p]
-\includegraphics[width = 6in]{Figures/Figure6-IRA2Impact.pdf}
-\caption{Levels of glycolysis, pentose phosphate pathway and TCA intermediates differ based on the \textit{ira2} allele inherited. The relevant portions of the pathway are shown, with measured metabolites in red and significant linkages shown in bold. The accompanying plots show phenotype distribution of the segregants based only on the allele of IRA2 inherited: RM in purple, BY in orange. All metabolite levels are log2(Segregant / RM). LOD score for the closest marker is also shown. *includes analytically indistinguishable isomers.}
-\label{F6}
-\end{figure}
-
-\begin{figure}[p]
-\includegraphics[width = 6in]{Figures/Figure7-ira2effects.pdf}
-\caption{RM-inheriting segregants for \textit{ira2} show significantly lower levels for fructose-1,6-bisphosphate. Intensities (mean $\pm$ standard error) of FBP are plotted based upon the allele of \textit{ira2}.  Mass spectrometer ion counts for BY background (diamonds) and RM background (squares) are shown on the left axis while segregants' log2 relative abundances (triangles) are indicated on the right axis.}
-\label{F7}
-\end{figure}
 
 \textbf{Heritability of metabolite levels}
 
-We can only relate metabolite abundance variation to genetic heterogeneity across segregants when there is substantial genetic variation affecting metabolite levels in the first place.  Previous estimates of broad-sense heritability \cite{Lynch:1998vx} in \textit{A. thaliana} have suggested moderate heritability of metabolite traits across globally-distributed strains \cite{Keurentjes:2006ik}, while segregants showed substantially lower heritability of metabolite traits than expression traits (an average of 25\% and 65\% respectively) \cite{Rowe:2008ty, West:2006bk}.  We found extensive heritable variation of metabolite abundance in this study, with an average broad-sense heritability of 62\%.  This indicates that there are likely larger metabolic differences segregating between BY \& RM than within the Bay $\times$ Sha \textit{A. thaliana} cross.  Greater levels of heritability across metabolites are associated with an increased number of detected mQTLs (p = 0.014); this is evident in Figure \ref{QTLherit}, which shows linkage numbers as a function of heritability.  The effects of these QTLs can be seen by determining the fraction of the variance in metabolite abundance that is explained using QTL genotypes (Figure \ref{QTLvarex}).  Effect sizes and the total fraction of heritability explained vary greatly across metabolites, with some mQTLs explaining the vast majority of genetic variation, others collectively explaining a sizable portion through the joint additive effects of multiple loci and others still explaining little of the total variance. The large fraction of unexplained metabolite abundance heritability could be owing to two factors: insufficient power to detect multiple loci of small effect, or the non-additive interaction between loci \cite{Rowe:2008ty, Bloom:2013bq}.  
-
-\begin{figure}[h!]
-\centering
-\includegraphics[width = 4in]{Figures/heritPlot.pdf}
-\caption{Distribution of broad sense heritability (H$^{2}$) across measured metabolites: each circle represents a single metabolite, colored according to how many QTLs are associated with its abundance.  114 metabolites are shown: 74 known metabolites with 52 detected mQTL and 42 unknown metabolites (with known m/z, but unknown identity) associated with 20 additional mQTLs.}
-\label{QTLherit}
-\end{figure}
-
-\begin{figure}[h!]
-\centering
-\includegraphics[width = 6in]{Figures/heritExplainedComb.pdf}
-\caption{Fraction of broad-sense heritability explained by identified mQTLs.  Each stacked bar represents a single metabolite which was significantly associated with at least one locus.  The height of the bar is the broad-sense heritability of the metabolite's abundance, and the coloration partitions this heritability into unexplained heritability (gray), and the effects of each mapped QTL (colors).  Three examples are given to demonstrate the variable effect sizes observed across metabolites.  The distribution of metabolite abundances for a genotype is shown as a violin plot, and a 95\% confidence interval for the median of each genotype is reported with error bars.  This confidence interval was determined using a percentile bootstrapping method \cite{Davison:1997vn}.}
-\label{QTLvarex}
-\end{figure}
+We can only relate metabolite abundance variation to genetic heterogeneity across segregants when there is substantial genetic variation affecting metabolite levels in the first place.  Previous estimates of broad-sense heritability \cite{Lynch:1998vx} in \textit{A. thaliana} have suggested moderate heritability of metabolite traits across globally-distributed strains \cite{Keurentjes:2006ik}, while segregants showed substantially lower heritability of metabolite traits than expression traits (an average of 25\% and 65\% respectively) \cite{Rowe:2008ty, West:2006bk}.  We found extensive heritable variation of metabolite abundance in this study, with an average broad-sense heritability of 62\%.  This indicates that there are likely larger metabolic differences segregating between BY \& RM than within the Bay $\times$ Sha \textit{A. thaliana} cross.  Greater levels of heritability across metabolites are associated with an increased number of detected mQTLs (p = 0.014); this is evident in Figure 8, which shows linkage numbers as a function of heritability.  The effects of these QTLs can be seen by determining the fraction of the variance in metabolite abundance that is explained using QTL genotypes (Figure 9).  Effect sizes and the total fraction of heritability explained vary greatly across metabolites, with some mQTLs explaining the vast majority of genetic variation, others collectively explaining a sizable portion through the joint additive effects of multiple loci and others still explaining little of the total variance. The large fraction of unexplained metabolite abundance heritability could be owing to two factors: insufficient power to detect multiple loci of small effect, or the non-additive interaction between loci \cite{Rowe:2008ty, Bloom:2013bq}.  
 
 
-
-\clearpage
-\begin{center}
-\textbf{DISCUSSION}
-\end{center}
-\vspace{10mm}
+\textbf{Implications of metabolic effects}
 
 We used high-throughput metabolite phenotyping in a cross of two divergent strains of yeast to find 52 linkages for 34 metabolites. We have detected linkages for a majority of compounds with significant differences between parental strains, as well as for a few compounds without such differences. Many metabolites show transgressive segregation, with levels in progeny strains outside the range of the parents; the parental strains likely carry alleles with opposing effects, with some segregants that inherit combinations of alleles that result in extreme metabolite levels, as has been observed for transcript levels \cite{Brem:2005gh}. Such opposing effects in the parent strains were also evident in control of glycolytic flux, which is similar in the parental strains, but diverges upon an \textit{ira2} allele swap.
 
@@ -232,7 +170,7 @@ The remaining mQTL hotspots of Zhu et al. were associated with amino acid metabo
 
 \vspace{10mm}
 \begin{center}
-\textbf{Materials and Methods}
+\textbf{Materials \& Methods}
 \end{center}
 \vspace{10mm}
 
@@ -280,17 +218,11 @@ The association between the number of QTLs found for a metabolite and the metabo
 
 \vspace{10mm}
 \begin{center}
-\textbf{ACKNOWLEDGEMENTS}
+\textbf{Acknowledgements}
 \end{center}
 \vspace{10mm}
 
-We thank B. Bennett for technical assistance and advice; E. Melamud and M. Clasquin for help with peak-picking; W. Lu and S. Kyin for mass spectrometry maintenance; C. DeCoste for FACS support; I. Lewis for NMR assistance; E. Smith, J. Shapiro, E. Anderson, I. Ehrenreich, and J. Bloom for advice. Funding provided by NIH grants R37 MH059520 to L.K., and GM071508 to the Lewis- Sigler Institute, and National Science Foundation CAREER Award MCB-0643859, Beckman Foundation and American Heart Association awards to J.D.R. L.K. is a James S. McDonnell Centennial Fellow and an Investigator of the Howard Hughes Medical Institute. This research is supported in part by the Department of Energy Office of Science Graduate Fellowship Program (DOE SCGF), made possible in part by  the American Recovery and Reinvestment Act of 2009, administered by ORISE-ORAU under contract no. DE-AC05-06OR23100.
-
-\vspace{10mm}
-\begin{center}
-\textbf{REFERENCES}
-\end{center}
-\vspace{10mm}
+We thank B. Bennett for technical assistance and advice; E. Melamud and M. Clasquin for help with peak-picking; W. Lu and S. Kyin for mass spectrometry maintenance; C. DeCoste for FACS support; I. Lewis for NMR assistance; E. Smith, J. Shapiro, E. Anderson, I. Ehrenreich, and J. Bloom for advice.
 
 
 \bibliography{bpcite}
@@ -298,9 +230,29 @@ We thank B. Bennett for technical assistance and advice; E. Melamud and M. Clasq
 
 \vspace{10mm}
 \begin{center}
-\textbf{SUPPORTING FIGURES and TABLES}
+\textbf{Figure Legends}
 \end{center}
 \vspace{10mm}
+
+
+\underline{Figure 1}. \textbf{Distribution of significant linkages across the genome}.  Metabolite linkages that exceeded the 0.1 FDR significance threshold are plotted based on their most significant marker's genome location (indicated with a dot) with a 95\% confidence interval. Continuous vertical lines represent chromosome ends. Numerals are placed at chromosomes' center. Genes investigated in this study are shown at top.  mQTLs for ions of unknown identity were combined into a single class.
+
+\underline{Figure 2}. \textbf{Similarities between metabolite and transcript linkage distributions}.  Significant linkages are binned in 10 kb increments and the count for these bins are plotted. Linkage distributions for transcripts are shown at top, metabolites at bottom. Shared mQTL-eQTL hotspots are colored green.  Dotted blue lines show chromosome ends. Red lines show the hotspot cutoff (see Methods for calculation).
+
+\underline{Figure 3}. Levels of pyrimidine intermediates and products differ based on the \textit{ura3} allele inherited. The relevant portions of the pathway are shown, with measured metabolites in red. The location of \textit{ura3} in the pathway is shown in green. The accompanying plots show phenotype distribution of the segregants based only on the allele of \textit{ura3} inherited: RM in purple, BY in orange. The \textit{ura3} gene is defective in RM. All metabolite levels are log2(Segregant / RM). Compounds that were significantly linked to \textit{ura3} locus (via LOD scores) are shown in bold.
+
+\underline{Figure 4}. Levels of sulfur-assimilation intermediates differ based on the \textit{slt2} allele inherited. The relevant portions of the pathway are shown, with measured metabolites in red. The accompanying plots display the phenotypic distribution of the segregants based only on the allele of \textit{slt2} inherited: RM in purple, BY in orange. All metabolite levels are log2(Segregant / RM). Compounds that were significantly linked to \textit{slt2/Erc1} locus (via LOD scores) are shown in bold.
+
+\underline{Figure 5}. RM-inheriting segregants for \textit{slt2} and \textit{erc1} show significantly higher levels for SAM.  Intensities (mean $\pm$ standard error) of SAM are plotted based upon the allele of \textit{slt2} (top) and \textit{slt2} and \textit{erc1} (bottom). Mass spectrometer ion counts for BY background (diamonds) and RM background (squares) are shown on the left axis while segregants' log2 relative abundances (triangles) are indicated on the right axis.
+
+\underline{Figure 6}.  Levels of glycolysis, pentose phosphate pathway and TCA intermediates differ based on the \textit{ira2} allele inherited. The relevant portions of the pathway are shown, with measured metabolites in red and significant linkages shown in bold. The accompanying plots show phenotype distribution of the segregants based only on the allele of IRA2 inherited: RM in purple, BY in orange. All metabolite levels are log2(Segregant / RM). LOD score for the closest marker is also shown. *includes analytically indistinguishable isomers.
+
+\underline{Figure 7}.  RM-inheriting segregants for \textit{ira2} show significantly lower levels for fructose-1,6-bisphosphate. Intensities (mean $\pm$ standard error) of FBP are plotted based upon the allele of \textit{ira2}.  Mass spectrometer ion counts for BY background (diamonds) and RM background (squares) are shown on the left axis while segregants' log2 relative abundances (triangles) are indicated on the right axis.
+
+\underline{Figure 8}.  \textbf{Distribution of broad sense heritability (H$^{2}$) across measured metabolites:} each circle represents a single metabolite, colored according to how many QTLs are associated with its abundance.  114 metabolites are shown: 74 known metabolites with 52 detected mQTL and 42 unknown metabolites (with known m/z, but unknown identity) associated with 20 additional mQTLs.
+
+\underline{Figure 9}.  \textbf{Fraction of broad-sense heritability explained by identified mQTLs.}  Each stacked bar represents a single metabolite which was significantly associated with at least one locus.  The height of the bar is the broad-sense heritability of the metabolite's abundance, and the coloration partitions this heritability into unexplained heritability (gray), and the effects of each mapped QTL (colors).  Three examples are given to demonstrate the variable effect sizes observed across metabolites.  The distribution of metabolite abundances for a genotype is shown as a violin plot, and a 95\% confidence interval for the median of each genotype is reported with error bars.  This confidence interval was determined using a percentile bootstrapping method \cite{Davison:1997vn}.
+
 
 \underline{Figure S1}. \textbf{Accumulation of metabolic genes in random distributions of intervals}. Confidence intervals were randomly permuted across the yeast genome. All genes classified as ÔmetabolicÕ that overlapped with a confidence interval were counted (see Materials and Methods). This was repeated 10,000 times and the distribution seen is shown. The red arrow shows were the actual count is relative to the distribution (471), where only 0.7\% of permuted values were greater.
 
@@ -311,6 +263,12 @@ We thank B. Bennett for technical assistance and advice; E. Melamud and M. Clasq
 \underline{Figure S4}. \textbf{95\% Confidence Intervals of Chromosome XV-linked metabolites}. 95\% Confidence intervals were computed using the bayesint function in R/QTL. Shown in black is the interval, the red marks are the location of the specific marker with the highest LOD score for the respective metabolite. In blue are the ORFs of local genes. IRA2 is within all five intervals.
 
 \underline{Figure S5}. \textbf{Impact of IRA2 allele on glycolysis}. Segregants inheriting the RM allele of IRA2 show significantly lower citrate, dihydroxyacetone phosphate, hexose phosphate and sedoheptulose 7-phosphate levels. Relative metabolite concentrations (mean $\pm$ standard deviation) are plotted based upon the allele of IRA2. Absolute ion counts for BY background (diamonds) and RM background (squares) are plotted on the left axis while segregantsÕ (triangles) relative intensities are plotted on the right axis.
+
+\vspace{10mm}
+\begin{center}
+\textbf{Tables}
+\end{center}
+\vspace{10mm}
 
 \underline{Table S1}. \textbf{Metabolites and their linkage LOD-scores}. All 52 linkages are listed, sorted by metabolite name. Metabolites with multiple linkages are sorted by LOD-score. The chromosome and position of the closest marker are also given. For metabolites detected in both parental strains, the p-value of metabolite level differences between the parents is also shown. FDR of 5\% corresponds to a p-value of 0.0898. * Same compound but in different ionization modes. $\dag$ considered same compound.
 
