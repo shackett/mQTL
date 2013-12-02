@@ -58,14 +58,61 @@ abundMatr <- abundMat[good_compounds,]
 abundMatr[abund_dataMD[good_compounds,] == baseline] <- NA
 log_abundMatr <- log(abundMatr, base = 2)	
 
-
 rm_normMat <- matrix(NA, ncol = length(abundMatr[1,]), nrow = length(abundMatr[,1]))
 for(num in 1:length(rm_normMat[1,])){
 	rm_normMat[,num] <- apply(matrix(rmdata[good_compounds, rmcol_list[[num]]], ncol = length(rmcol_list[[num]])), 1, mean) 
 	}
 	
+
 normMat <- log_abundMatr - rm_normMat
 	
+###
+
+augmentedNorm <- data.frame(seginfo, t(normMat))
+augmentedNorm_melt <- data.table(melt(augmentedNorm, id.vars = c("date", "seg")))
+
+augmentedNorm_melt[,N := sum(!is.na(value)), by = c("seg", "variable")] 
+augmentedNorm_melt <- augmentedNorm_melt[N >= 2,,]
+
+augmentedNorm_segAgg <- augmentedNorm_melt[,list(var = var(value), pasteN = paste(value, collapse = "_")),by = c("seg", "variable")]
+
+augmentedNorm_segAgg[,S1 := as.numeric(strsplit(pasteN, split =  "_")[[1]][1]),by = c("seg", "variable")]
+augmentedNorm_segAgg[,S2 := as.numeric(strsplit(pasteN, split =  "_")[[1]][2]),by = c("seg", "variable")]
+
+hex_bin_max <- 100
+n_hex_breaks <- 8
+hex_breaks <- round(exp(seq(0, log(500), by = log(500)/8)))
+
+hex_theme <- theme(text = element_text(size = 23, face = "bold"), title = element_text(size = 25, face = "bold"), panel.background = element_rect(fill = "gray90"), legend.position = "top", 
+  panel.grid.minor = element_blank(), panel.grid.major = element_blank(), axis.line = element_blank(), legend.key.width = unit(6, "line")) 
+
+ggplot(augmentedNorm_segAgg, aes(x = S1, y = S2)) + geom_hex(bins = 100) + hex_theme +
+  scale_fill_gradient(name = "Counts", low = "black", high = "firebrick1", trans = "log", breaks = hex_breaks, labels = hex_breaks) +
+  scale_x_continuous("log2 Replicate 1", expand = c(0.02,0.02), limits = c(-5,5)) + scale_y_continuous("log2 Replicate 2", expand = c(0.01,0.01), limits = c(-5,5)) +
+  ggtitle("Comparison of paired biological replicates")
+ggsave("replicateComp.pdf", height = 10, width = 10)
+
+### perform a PCA of relative abundance matrix ###
+
+imputedMat <- impute.knn(normMat, rowmax = 0.80)$data
+std_imputedMat <- t(scale(t(imputedMat), center = TRUE, scale = TRUE))
+
+std_imputedMat_svd = svd(std_imputedMat)
+
+scatter_theme <- theme(text = element_text(size = 23, face = "bold"), title = element_text(size = 25, face = "bold"), panel.background = element_rect(fill = "azure"), 
+      legend.position = "none", panel.grid.minor = element_blank(), panel.grid.major = element_line(colour = "pink"), axis.ticks = element_line(colour = "pink"),
+      strip.background = element_rect(fill = "cyan")) 
+
+qplot(x = c(1:nrow(std_imputedMat)), y = std_imputedMat_svd$d^2 / sum(std_imputedMat_svd$d^2), color = "RED", size = 2) + scale_x_continuous("Principal component", expand = c(0.01,0.2)) +
+  scale_y_continuous("Fraction of variance explained", expand = c(0.01,0.01), limits = c(0, 0.35)) + scatter_theme + ggtitle("Scree plot of metabolite abundances") + scale_color_identity()
+ggsave("metRAscree.pdf", height = 8, width = 8)
+
+normMat_corr <- cor(normMat, use = "pairwise.complete.obs", method = "spearman"
+
+###
+
+
+
 rowMean <- apply(normMat, 1, mean, na.rm = TRUE)	
 rowSS <- rowSums((normMat - t(t(rowMean)) %*% matrix(1, ncol = length(normMat[1,]), nrow = 1))^2, na.rm =TRUE)
 
@@ -123,6 +170,59 @@ segGeno <- segGeno[,colinfo %in% segName]
 collapsedSegName <- sapply(segName, function(segname){
   paste(strsplit(segname, split = '_')[[1]], collapse = "")
   })
+
+#### point estimate of a segregant using conventional segregant name ###
+abundPoint = abundMat[good_compounds,]
+log_abundPoint <- log(abundPoint, base = 2)  
+normalPoint <- log_abundPoint - rm_normMat
+
+segPointEst <- (normalPoint %*% sampleToSeg)/(t(t(rep(1, nrow(normalPoint)))) %*% apply(sampleToSeg, 2, sum))
+segPointEstNames <- names(collapsedSegName)[chmatch(colnames(segPointEst), collapsedSegName)]
+segPointEst <- segPointEst[,!is.na(segPointEstNames)]
+segPointEstNames <- segPointEstNames[!is.na(segPointEstNames)]
+colnames(segPointEst) <- segPointEstNames
+write.table(segPointEst, "segMetAbundance.tsv", sep = "\t", quote = F, col.names = T, row.names = T)
+
+## Look at pairwise allele frequencies ##
+
+geno <- segGeno[,grep('X[0-9]{1,2}_[0-9]{1,2}', colnames(segGeno))]
+geno <- geno[match(unique(segGeno$name), segGeno$name),]
+
+ff_geno <- matrix(NA, ncol = nrow(geno), nrow = nrow(geno))
+for(i in 1:nrow(ff_geno)){
+  for(j in 1:nrow(ff_geno)){
+    genoCounts <- table(t(geno[i,]), t(geno[j,]))
+    genoCounts <- genoCounts[rownames(genoCounts) != 2, colnames(genoCounts) != 2]
+    genoFreq <- genoCounts/sum(genoCounts)
+    aFreq <- c(sum(genoFreq[,2]), sum(genoFreq[2,]))
+    D = genoFreq[2,2] - prod(aFreq)
+    
+    if(D <= 0){
+      ff_geno[i,j] <- D/max(-1*aFreq[1]*aFreq[2], -1*(1-aFreq[1])*(1-aFreq[2]))
+      }else{
+      ff_geno[i,j] <- D/min(aFreq[1] * (1 - aFreq[2]), aFreq[2] * (1 - aFreq[1]))
+      }
+  }
+  print(i)
+}
+system("say wuz up yo job iz done")
+
+#save(ff_geno, file = "genoLD.Rdata")
+ff_geno_melt <- melt(ff_geno)
+colnames(ff_geno_melt) <- c("x", "y", "D")
+
+geno_info <- segGeno[match(unique(segGeno$name), segGeno$name), grep('X[0-9]{1,2}_[0-9]{1,2}', colnames(segGeno), invert = T)]
+loc_of_interest <- range(grep('YHR', geno_info$name))
+
+ggplot() + geom_tile(data = ff_geno_melt, aes(x = x, y = y, fill = D)) + scale_fill_gradient("Standardized Disequilibrium", low = "black", high = "RED") +
+  scale_x_continuous("Thinned marker number", expand = c(0,0)) + scale_y_continuous("Thinned marker number", expand = c(0,0)) +
+  geom_vline(xintercept = loc_of_interest, width = 1, col = "white") + geom_hline(yintercept = loc_of_interest, width = 1, col = "white")
+ggsave("full_LD.pdf", height = 15, width = 15)
+                    
+ff_geno_arm <- ff_geno_melt[ff_geno_melt$x > loc_of_interest[1] & ff_geno_melt$x < loc_of_interest[2],]
+ggplot() + geom_tile(data = ff_geno_arm, aes(x = x, y = y, fill = D)) + scale_fill_gradient("Standardized Disequilibrium", low = "black", high = "RED") +
+  scale_x_continuous("YHR arm", expand = c(0,0)) + scale_y_continuous("Thinned marker number", expand = c(0,0))
+ggsave("YHR_LD.pdf", height = 15, width = 6)
 
 #missing genotypes for 2 segregants
 #table(colnames(sampleToSeg) %in% collapsedSegName)
@@ -338,7 +438,7 @@ herit_plot + geom_dotplot(binwidth = 0.05, method = "histodot", binpositions = "
 #library(colorRamps)
 #hotCols <- colorRampPalette(c("black", "firebrick1"))
 
->
+
 herit_plot <- ggplot(met_herit, aes(x = heritability, fill = fraction_missing_lines)) + facet_grid(. ~ nassoc)
 herit_plot + geom_histogram(binwidth = 0.05) + coord_flip() + scale_fill_discrete(name = 'Fraction of \nMissing Lines', h = c(200, 360)) + scale_x_continuous(name = "Heritability", limits = c(0,1), expand = c(0,0)) + scale_y_continuous(name = "Number of Metabolites") + 
   theme(axis.text.x = element_text(size = 12, face = "bold"), axis.text.y = element_text(size = 12, face = "bold"), strip.text.x = element_text(size = 16, colour = "RED", face = "bold")) +
@@ -380,8 +480,9 @@ disc_plot + geom_bar()
 
 ###### read in supplementary metabolomics data #########
 library(qvalue); library(gplots)
-
-suppMSdata <- read.delim("~/Desktop/krugMetabData/srh_bruenigDat.txt", stringsAsFactors = FALSE)
+baseline <- 32
+                    
+suppMSdata <- read.delim("~/Desktop/mQTL/krugMetabData/srh_bruenigDat.txt", stringsAsFactors = FALSE)
 suppMSlist <- list()
 suppMSlist$mets <- suppMSdata[,1:5]; colnames(suppMSlist$mets) <- c("Instrument", "groupRank", "Ngood", "medianRT", "Compound")
 suppMSlist$abund <- suppMSdata[,-c(1:5)]
